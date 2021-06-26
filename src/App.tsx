@@ -2,12 +2,24 @@ import { Button, List, TextField, Typography } from "@material-ui/core";
 import { Collections } from "@material-ui/icons";
 import AddToPhotosIcon from "@material-ui/icons/AddToPhotos";
 import React, { useState, useEffect } from "react";
-// import logo from "./logo.svg";
+import { makeStyles } from "@material-ui/styles";
 import "./App.css";
 import { db } from "./firebase";
 import TaskItems from "./TaskItems";
 
+const useStyles = makeStyles({
+  field: {
+    marginTop: 30,
+    marginBottom: 20,
+  },
+  list: {
+    margin: "auto",
+    width: "40%",
+  },
+});
+
 const App: React.FC = () => {
+  const classes = useStyles();
   const [tasks, setTasks] = useState([{ id: "", title: "" }]);
   const [todos, setTodos] = useState("");
   const handleChange = () => {
@@ -26,6 +38,7 @@ const App: React.FC = () => {
       <Typography align="center">
         <h1>ts-todo</h1>
         <TextField
+          className={classes.field}
           InputLabelProps={{ shrink: true }}
           color="primary"
           label="new task ?"
@@ -44,7 +57,7 @@ const App: React.FC = () => {
           追加
           <AddToPhotosIcon />
         </Button>
-        <List>
+        <List className={classes.list}>
           {tasks.map((task) => (
             <TaskItems
               id={task.id}
