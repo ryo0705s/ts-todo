@@ -1,11 +1,12 @@
 import { Button, List, TextField, Typography } from "@material-ui/core";
-import { Collections } from "@material-ui/icons";
+// import { Collections } from "@material-ui/icons";
 import AddToPhotosIcon from "@material-ui/icons/AddToPhotos";
 import React, { useState, useEffect } from "react";
 import { makeStyles } from "@material-ui/styles";
 import "./App.css";
-import { db } from "./firebase";
+import { auth, db } from "./firebase";
 import TaskItems from "./TaskItems";
+import ExitToAppIcon from "@material-ui/icons/ExitToApp";
 
 const useStyles = makeStyles({
   field: {
@@ -18,13 +19,17 @@ const useStyles = makeStyles({
   },
 });
 
-const App: React.FC = () => {
+const App: React.FC = (props: any) => {
   const classes = useStyles();
   const [tasks, setTasks] = useState([{ id: "", title: "" }]);
   const [todos, setTodos] = useState("");
   const handleChange = () => {
     db.collection("tasks").add({ title: todos });
   };
+  // const handleLogout = () => {
+  //   auth.logoutWithEmailAndPassword(email, password);
+  //   history.pushState("/login");
+  // };
   useEffect(() => {
     const unSub = db.collection("tasks").onSnapshot((snapshot) => {
       setTasks(
@@ -33,10 +38,28 @@ const App: React.FC = () => {
     });
     return () => unSub();
   }, []);
+  useEffect(() => {
+    const unSub = auth.onAuthStateChanged((user) => {
+      !user && props.history.push("login");
+    });
+    return () => unSub();
+  });
   return (
     <>
       <Typography align="center">
         <h1>ts-todo</h1>
+        <Button
+          onClick={async () => {
+            try {
+              await auth.signOut();
+              props.history.push("login");
+            } catch (error) {
+              alert(error.message);
+            }
+          }}
+        >
+          <ExitToAppIcon />
+        </Button>
         <TextField
           className={classes.field}
           InputLabelProps={{ shrink: true }}
