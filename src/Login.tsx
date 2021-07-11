@@ -77,7 +77,7 @@ const Login: React.FC = (props: any) => {
               }
         }
       >
-        {isLogin ? "login" : "register"}
+        {isLogin ? "login" : ""}
       </Button>
       <br />
       <Typography align="center">
